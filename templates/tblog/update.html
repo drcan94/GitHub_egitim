@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}
+Güncelleme Sayfası
+{% endblock %}
+
+{% block icerik %}
+<style>
+</style>
+    <div class="col-lg-8 text-center" style="margin-top:50px;margin-right:auto;margin-left: auto">
+        <h3 class="card-header">İçerik Güncelleme Alanı</h3>
+        <div>
+    <form class="text-center" action="{% url "update" form.instance.slug %}" enctype="multipart/form-data" method="post"><br>
+    {% csrf_token %}
+        {% include "tblog/includes/form-include.html" %}
+        <div class="form-group">
+            <div class="row">
+                <div class="col-lg-8" style="margin-left: auto;margin-right: auto">
+                    <input type="submit" value="Güncelle" class="btn pull-right btn-success btn-sm">
+                </div>
+            </div>
+        </div>
+
+    </form>
+        <br>
+        </div>
+    </div>
+
+{% endblock %}

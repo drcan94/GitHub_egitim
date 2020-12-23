@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Ana Sayfa
+{% endblock %}
+
+{% block icerik %}
+    <style>
+    </style>
+
+    <div style="margin-top : 120px;background-color: #0ebb7f" class="jumbotron text-center">
+        <h3>EĞİTİM EMEK İSTER</h3>
+        <br>
+        SAYFAMIZA HOŞGELDİNİZ<br>
+        <div class="col-lg-10 pull-center"><h5 style="margin-top: 30px" >BİLGİNİN EFENDİSİ OLMAK İÇİN ÇALIŞMANIN KÖLESİ OLMAK GEREKİR</h5><h6>"BALZAC"</h6></div>
+        <p style="margin-top: 30px"><a style="color:darkblue;" href="{% url "about" %}">Bu Site Nedir :)</a></p>
+    </div>
+    {% if request.user.is_authenticated %}
+    {% for i in user.userprofile.get_usernames %}
+        <a href="{% url 'user-profile' i.username %}">{{i.first_name}},</a>
+    {% endfor %}
+{% endblock %}

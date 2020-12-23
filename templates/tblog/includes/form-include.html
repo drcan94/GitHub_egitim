@@ -1,0 +1,27 @@
+{{ form.media }}
+
+{% for i in form %}
+    <div class="form-group">
+        <div class="col-lg-12">
+            <div class=" col-lg-12">
+                <label class="control-label" for="{{ i.slug_for_label }}">
+                    <b class="text-center" style="margin-right: auto;margin-left: auto">{{ i.label }}</b>
+                </label><br>
+                {{ i }}
+                {% if i.errors %}
+                    {% for error in i.errors %}
+                        <span class="text-danger">
+                            <b>
+                                {{ error }}
+                            </b>
+                        </span>
+                    {% endfor %}
+                {% else %}
+                    {% if i.help_text %}
+                        {{ i.help_text }}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endfor %}

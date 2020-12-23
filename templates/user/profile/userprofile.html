@@ -1,0 +1,40 @@
+{% extends 'user/profile/user_profile_base.html' %}
+{% load static %}
+
+{% block profil_icerik %}
+    <div class="col-lg-8 text-center" style="margin-right: auto;margin-left: auto">
+        <h3 class="card-header">GÖNDERİLER</h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 text-center" style="margin-right:auto;margin-left: auto">
+            <div style="margin-top:20px;margin-bottom: 20px">
+                {% for i in articles %}
+                    <hr style="border-color:#8b0000">
+                    <div style="vertical-align: middle; margin-left:auto;margin-right:auto;background-color: rgb(137, 189, 238)" class="card-header col-lg-11 row">
+                        <div style="margin-left:auto; margin-top:auto;" class="col-lg-8 text-left">
+                            <a href="{% url "detail" i.slug %}">
+                                <br>
+                                <b>Başlık : {{ i.title }},</b>
+                            </a>
+                            <small><a href="{% url "user-profile" i.user.username %}">{{ i.user }}</a>, {{ i.created_date }}</small>
+                            <br><br>
+                            {% if i.get_image %}
+                                <img class="img-responsive" width="60" style="margin-bottom: 8px" src="{{ i.get_image }}">
+                                <br>
+                            {% endif %}
+
+                            {{ i.content|safe|linebreaks|truncatewords:10 }}
+                            <br>
+                        </div>
+                        <p style="margin-right:auto; margin-top:auto;margin-bottom: auto;" class="col-lg-4">
+                        <a style="margin-right:auto; margin-top:auto;margin-bottom: auto;" class="col-lg-4">{{ i.get_yayin_taslak_html }}</a>
+                        </p>
+
+
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

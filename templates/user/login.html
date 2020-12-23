@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Giriş Sayfası
+{% endblock %}
+
+{% block icerik %}
+
+    <br>
+    <div class="row" style="margin-top: 30px">
+        <div class="col-lg-6 text-center" style="margin-right:auto;margin-left: auto">
+            {% if form.non_field_errors %}
+                {% for i in form.non_field_errors %}
+                    <div class="text-center alert alert-danger alert-dismissible">
+                        {{ i|safe }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <h3 class="card-header">Giriş Ekranı</h3>
+            <div style="margin-top:20px">
+                <form method="post" action="{% url "login" %}">
+                    {% csrf_token %}
+                    {% for i in form %}
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <div class=" col-lg-8" style="margin-right: auto;margin-left: auto">
+                                    <label class="control-label" for="{{ i.slug_for_label }}">
+                                        <b>{{ i.label }}</b>
+                                    </label>
+                                    {{ i }}
+                                    {% if i.errors %}
+                                        {% for error in i.errors %}
+                                            <span class="text-danger">
+                                            <b>
+                                                {{ error }}
+                                            </b>
+                                            </span>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% if i.help_text %}
+                                            {{ i.help_text }}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <input type="submit" value="GİRİŞ YAP" class="btn btn-success btn-sm"><br><br>
+                    <span><b>Hesabınız yoksa kaydolmak için </b><a href="{% url 'register' %}">tıklayınız</a></span>
+                </form>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "user/profile/user_profile_base.html" %}
+
+{% block profil_icerik %}
+    <div class="col-lg-8 text-center" style="margin-right: auto;margin-left: auto">
+        <h3 class="card-header">HAKKIMDA</h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-10 text-center" style="margin-right:auto;margin-left: auto">
+            <div style="margin-top:20px">
+                {{ user.userprofile.about|linebreaksbr }}
+                <br><br>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% if following.has_other_pages %}
+    {% if following.has_next %}
+        <div class="row">
+            <a id="follow_paginate" style="margin-right: auto;margin-left: auto"
+               href="{% url "follow_list" follow_type %}?page={{ following.next_page_number }}&username={{ username }}"
+               class="text-center btn btn-link btn-info active">Daha
+                Fazla Göster</a>
+        </div>
+    {% endif %}
+{% endif %}

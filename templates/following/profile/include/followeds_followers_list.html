@@ -1,0 +1,32 @@
+{% load following_system %}
+
+    {% for i in following %}
+        <div style="margin-bottom: 25px" class="follow col-lg-12">
+            {% if follow_type == "followeds" %}
+                <a href="{% url 'user-profile' i.followed.username %}"><img class="img-responsive" style="width: 35px" src="{{ i.followed.userprofile.get_profile_photo }}"></a>
+                <span followed="{{ i.followed.username }}"
+                      follower="{{ request.user.username }}"><a style="color: black" href="{% url 'user-profile' i.followed.username %}">{{ i.followed.username }}</a></span>
+                {% if i.followed != request.user %}
+                    {% if i.followed|who_is_myfolloweds:myfolloweds %}
+                        <button class="follow_button btn btn-sm btn-danger active">Takipten Çık</button>
+                    {% else %}
+                        <button class="follow_button btn btn-sm btn-success active">Takip Et</button>
+                    {% endif %}
+                {% endif %}
+            {% elif follow_type == "followers" %}
+                <a href="{% url 'user-profile' i.follower.username %}"><img class="img-responsive" style="width: 35px" src="{{ i.follower.userprofile.get_profile_photo }}"></a>
+                <span followed="{{ i.follower.username }}"
+                      follower="{{ request.user.username }}"><a style="color: black" href="{% url 'user-profile' i.follower.username %}">{{ i.follower.username }}</a></span>
+                {% if i.follower != request.user %}
+                    {% if i.follower|who_is_myfolloweds:myfolloweds %}
+                        <button class="follow_button btn btn-sm btn-danger active">Takipten Çık</button>
+                    {% else %}
+                        <button class="follow_button btn btn-sm btn-success active">Takip Et</button>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+        </div>
+    {% empty %}
+        <p class="lead text-center" style="color: darkred;margin-right: auto;margin-left: auto"><b>Mevcut Değil</b></p>
+    {% endfor %}

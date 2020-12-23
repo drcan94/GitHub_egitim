@@ -1,0 +1,61 @@
+<div class="bd-example">
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"  style="justify-content: center;">
+        <button class="dropdown-menu-right navbar-toggler collapsed" type="button" data-toggle="collapse"
+                data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+            <li class="text-center nav-item dropdown active">
+                {% if request.user.is_authenticated %}
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ request.user.userprofile.get_screen_name }}
+                    </a>
+
+                    <div class="text-center dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'user-profile' request.user.username %}">Profil Sayfam</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}">Çıkış</a>
+                    </div>
+                {% else %}
+                    <a class="text-center nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Kontrol Paneli
+                    </a>
+                    <div class="text-center dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'login' %}">Giriş Yap</a>
+                        <a class="dropdown-item" href="{% url 'register' %}">Kaydol</a>
+                    </div>
+                {% endif %}
+            </li>
+            </ul>
+            <div class="row">
+                <span class="nav-item active" style="margin-left: auto">
+                <a href="{% url 'index' %}">
+                    <button class="btn btn-success">Ana Sayfa</button>
+                </a>
+            </span>
+                <span class="nav-item active">
+                <a href="{% url 'about' %}">
+                    <button class="btn btn-success">Bu ne ki</button>
+                </a>
+            </span>
+                <span class="nav-item active" style="margin-right: auto">
+                <a href="{% url 'spots' %}">
+                    <button class="btn btn-success">İçerikler</button>
+                </a>
+            </span>
+            </div>
+
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active" style="margin-left: auto;margin-right: auto">
+                    <a href="{% url 'create' %}">
+                        <button class="btn btn-success">İçerik Oluştur</button>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>

@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ user.userprofile.user_full_name }} profil sayfası
+{% endblock %}
+
+{% block ust_icerik %}
+    <style rel="stylesheet" type="text/css">
+        .modal-dialog{
+            overflow-y: initial !important
+        }
+        .modal-body {
+            height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+    <script type="text/javascript" rel="script">
+        $(document).ready(function () {
+            $("#user-following").on("click", ".follow_button", function () {
+                var $this = $(this);
+                var $url = $this.attr("url")
+                var $username = $this.attr("username")
+                var $follow_type = $this.attr('follow_type');
+                var $modal = $("#profile_following_modal");
+                $modal.attr("follow_type", $follow_type)
+                if ($follow_type === 'followeds')
+                    $modal.find('.modal-title').html('Takip Edilenler');
+                else if ($follow_type === 'followers') {
+                    $modal.find('.modal-title').html('Takipçiler');
+                }
+                $.ajax({
+                    url: $url,
+                    method: "GET",
+                    dataType: "json",
+                    data: {"username": $username},
+                    success: function (data) {
+                        if (data.is_valid) {
+                            $modal.find("#follow_paginate").closest("div").remove()
+                            $modal.find(".modal-body #follow_list").html("").prepend(data.html).after(data.html_paginate)
+                            $modal.modal("show")
+                        }
+                    }
+                })
+            });
+            $("#following_button").click(function () {
+                var x = $(this);
+                var url = x.attr("url");
+                var follower = x.attr("follower");
+                var followed = x.attr("followed");
+
+                var data = {follower_username: follower, followed_username: followed}
+
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    dataType: "json",
+                    data: data,
+                    success: function (data) {
+                        if (data.is_valid) {
+                            x.html(data.msg)
+                            $("#user-following").html(data.html)
+                        }
+                    }
+                })
+            })
+            $("#profile_following_modal").on("click", "#follow_list .follow .follow_button", function (e) {
+                var $this = $(this);
+                var $modal_body = $this.closest(".modal-body");
+                var $modal = $($this.closest(".modal"));
+                var $follow_type = $modal.attr("follow_type");
+                var $owner = $modal.attr("owner");
+                var $span = $($this.closest(".follow").find("span"));
+                var followed = $span.attr("followed");
+                var follower = $span.attr("follower");
+                var url = "{% url 'modal_following' %}";
+                var data = {
+                    owner: $owner,
+                    follow_type: $follow_type,
+                    follower_username: follower,
+                    followed_username: followed
+                }
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    dataType: "json",
+                    data: data,
+                    success: function (data) {
+
+                        if (data.owner) {
+                            if (data.follow_type === "followeds") {
+                                var $follow_list = $modal_body.find("#follow_list")
+                                $follow_list.html(data.html);
+                                $modal_body.find("#follow_paginate").closest(".row").remove();
+                                $follow_list.after(data.html_paginate)
+                            } else {
+                                if (data.takip_durum) {
+                                    $this.removeClass("btn-success")
+                                    $this.addClass("btn-danger")
+                                } else {
+                                    $this.removeClass("btn-danger")
+                                    $this.addClass("btn-success")
+                                }
+                                $this.html(data.msg);
+                            }
+                            $("#user-following").html(data.html_takip_render)
+                        } else {
+                            if (data.takip_durum) {
+                                $this.removeClass("btn-success")
+                                $this.addClass("btn-danger")
+                            } else {
+                                $this.removeClass("btn-danger")
+                                $this.addClass("btn-success")
+                            }
+                            $this.html(data.msg);
+                        }
+                    }
+                })
+            }).on("click", "#follow_paginate", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $follow_list = $this.closest(".modal").find("#follow_list");
+                var $follow_paginate = $this.closest(".modal").find("#follow_paginate");
+                var url = $this.attr("href");
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    method: "GET",
+                    beforeSend:function(){
+                        var $img = $("<img class='img-responsive' src='{% static "img/ajax-loader.gif" %}'/>")
+                        $follow_paginate.html($img)
+                    },
+                    success: function (data) {
+                        if (data.is_valid) {
+                            $follow_list.append(data.html)
+                            $follow_paginate.remove();
+                            $follow_list.after(data.html_paginate)
+                        }
+
+                    }
+                })
+
+            })
+        })
+    </script>
+{% endblock %}
+
+{% block icerik %}
+    <style>
+    </style>
+    <br>
+    <br>
+    <div class="user-profile">
+        <div class="col-lg-10 pull-center">
+            {% include "following/profile/include/following_modal.html" %}
+            <div class="text-center" style="margin-top:10px;margin-bottom: 10px">
+                <a href="{% if user.userprofile.get_profile_photo == "/media/False" %} {% url "user-settings" %} {% else %} {{ user.userprofile.get_profile_photo }} {% endif %}"><img
+                        class="user-profile-img"
+                        src="{% if user.userprofile.get_profile_photo != "/media/False" %} {{ user.userprofile.get_profile_photo }} {% else %} {{ "/static/img/default.jpg" }} {% endif %}"></a>
+            </div>
+
+            <div>
+                <h2 class="text-center">
+                    {% if user.userprofile.user_full_name %}
+                        <span>
+                            {{ user.userprofile.user_full_name }}
+                        </span>
+                    {% endif %}
+                </h2>
+                <h3 class="text-center"><small>@{{ user.username }}</small></h3>
+                <div id="user-following" class="text-center row" style="margin-top:10px;margin-bottom: 10px">
+                    {% include "user/profile/include/following/following_part.html" %}
+                </div>
+
+
+                {% if request.user != user %}
+                    <div class="text-center">
+                        <button followed="{{ user.username }}" follower="{{ request.user.username }}"
+                                url="{% url "following" %}" id="following_button" class="btn btn-primary active">
+                            {% if takip_kontrol %}
+                                <b>Takipten Çıkar</b>
+                            {% else %}
+                                <b>Takip Et</b>
+                            {% endif %}
+                        </button>
+                    </div>
+                {% endif %}
+                <br>
+            </div>
+            <div class="col-lg-12">
+                {% if request.user == user %}
+                    {% include "user/profile/include/own_navbar.html" %}
+                {% else %}
+                    {% include "user/profile/include/visitor_navbar.html" %}
+                {% endif %}
+                <div>
+                    {% block profil_icerik %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

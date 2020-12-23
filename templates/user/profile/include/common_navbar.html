@@ -1,0 +1,6 @@
+<li class="nav-item active">
+    <a class="nav-link {% if page == 'user-profile' %} active {% endif %}" href="{% url "user-profile" user.username %}" style="color:darkblue ">Gönderiler</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if page == 'about' %} active {% endif %}" href="{% url "about_me" user.username %}" style="color:darkblue">Hakkımda</a>
+</li>

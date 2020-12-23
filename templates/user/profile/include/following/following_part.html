@@ -1,0 +1,16 @@
+<div class="followers" style="margin-left: 95px;margin-right: auto">
+    <span class="btn-sm btn-warning disabled"><b>Takipçiler</b></span>
+    <button style="margin-top: 3px" url="{% url "follow_list" "followers" %}" follow_type="followers"
+            username="{{ user.username }}"
+            class="follow_button btn btn-sm btn-success btn-block">
+        {{ followers }}
+    </button>
+</div>
+<div class="followeds" style="margin-left:auto;margin-right: 60px">
+    <span class="btn-sm btn-warning disabled"><b>Takip Edilenler</b></span>
+    <button style="margin-top: 3px" url="{% url "follow_list" "followeds" %}" follow_type="followeds"
+            username="{{ user.username }}"
+            class="follow_button btn btn-sm btn-danger btn-block">
+        {{ followeds }}
+    </button>
+</div>

@@ -1,0 +1,29 @@
+body{
+    background-color: rgb(107, 194, 206);
+}
+
+.pull-center{
+    float: none;
+    margin: 0  auto;
+}
+
+.user-profile-img{
+    width: 100px;
+}
+
+.user-profile{
+    border: 2px solid;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 2px;
+    background-color: #dfa16e;
+}
+
+.glyphicon-star{
+    background-color:#CCCCCC;
+    font-size: 16px;
+}
+
+.glyphicon-star.active {
+    background-color: #FDB230;
+}

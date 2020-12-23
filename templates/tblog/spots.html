@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    İçerikler
+{% endblock %}
+
+{% block icerik %}
+    <div class="row">
+        <div class="col-lg-10 text-center" style="margin-top:30px;margin-right:auto;margin-left: auto">
+            <h3 class="card-header">İçerikler</h3><br>
+            <div class="row">
+                <div class="col-lg-12">
+                    {% if spots %}
+                        <div>
+                            <form action="{% url "spots" %}" style="margin-right: auto;margin-left: auto">
+                                <div>
+                                    {% for i in form %}
+                                        <div class="form-group">
+                                            {{ i }}
+                                            {% for error in i.errors %}
+                                                <span class="text-danger">
+                                            <b>
+                                                {{ error }}
+                                            </b>
+                                        </span>
+                                            {% endfor %}
+                                        </div>
+
+                                    {% endfor %}
+                                    <div style="margin-bottom: 20px">
+                                        <input class="btn btn-success" value="Ara" type="submit">
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                        {% for i in spots %}
+                            <div style="vertical-align: middle; margin-left:auto;margin-right:auto;background-color: rgb(137, 189, 238)"
+                                 class="spot card-header col-lg-12 row">
+                                <div style="margin-left:auto; margin-top:auto;" class="col-lg-8 text-left">
+                                    <a href="{% url "detail" i.slug %}">
+                                        <b>{{ i.title }},</b>
+                                    </a>
+                                    <small>
+                                        <a href="{% url "user-profile" i.user.username %}">{{ i.user }}</a>, {{ i.created_date }}
+                                    </small>
+                                    <span style="margin-left: 5px">
+                                    {% if request.user.username in i.get_added_favorite_user %}
+                                        <a href="{% url 'favorite-page' i.slug %}?next={% url 'spots' %}"
+                                           class="btn btn-sm btn-danger active"><span title="Favorilerinizden Çıkarın">Çıkar</span>
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'favorite-page' i.slug %}?next={% url 'spots' %}"
+                                           class="btn btn-sm btn-info active"><span title="Favorilerinize Ekleyin">Ekle</span>
+                                        </a>
+                                    {% endif %}
+                                    </span>
+                                    <br><br>
+                                    {% if i.get_image %}
+                                        <a href="{% url "detail" i.slug %}">
+                                            <img class="img-responsive" width="60" style="margin-bottom: 8px"
+                                                 src="{{ i.get_image }}"></a>
+                                    {% endif %}
+                                    <a style="color: black" href="{% url "detail" i.slug %}">
+                                        <p>{{ i.content|safe|linebreaks|truncatewords:5 }}</p></a>
+                                </div>
+                                <div style="margin-right:auto; margin-top:auto;margin-bottom: auto;" class="col-lg-4">
+                                    <span title="Yorum Sayısı"
+                                          class="btn btn-default active">{% if i.get_comment_count == "Henüz Yorum Yok" %}
+                                        {{ i.get_comment_count }} {% else %} {{ i.get_comment_count }}
+                                        yorum {% endif %}</span>
+                                    <span style="{% if i.get_comment_count == "Henüz Yorum Yok" and i.get_favorite_count == "Favorilere Eklenmedi" %} margin-top: 5px {% endif %}"
+                                          title="Favorilere Alan Kişi Sayısı"
+                                          class="btn btn-default active">{% if i.get_favorite_count == "Favorilere Eklenmedi" %}
+                                        {{ i.get_favorite_count }} {% else %} {{ i.get_favorite_count }}
+                                        favori {% endif %}</span>
+                                    <br><br>
+                                    {% if request.user == i.user %}
+                                        <a style="margin-left:auto; margin-top:auto; margin-bottom: auto; vertical-align: middle"
+                                           class="btn btn-success" href="{% url 'update' i.slug %}">Güncelle</a>
+                                        <a style="margin-right: auto; margin-top:auto; margin-bottom: auto; vertical-align: middle"
+                                           class="btn btn-danger" href="{% url 'delete' i.slug %}">Sil</a><br><br>
+                                    {% endif %}
+                                    <a style="margin-right:auto; margin-top:auto;margin-bottom: auto;"
+                                       class="col-lg-4">{{ i.get_yayin_taslak_html }}</a>
+                                </div>
+                            </div>
+                            <hr style="border-color:#8b0000">
+                        {% endfor %}
+                        <div class="row">
+                            <div style="margin-left: auto;margin-right: auto">
+                                {% if spots.has_other_pages %}
+                                    <ul class="pagination">
+                                        {% if spots.has_previous %}
+                                            <li>
+                                                <a href="?page={{ spots.previous_page_number }} {% if request.GET.yayin_taslak %} &yayin_taslak={{ request.GET.yayin_taslak }} {% endif %} {% if request.GET.search %} &search= {{ request.GET.search }} {% endif %}">
+                                                    &laquo;
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="disabled">
+                                                <span>
+                                                    &laquo;
+                                                </span>
+                                            </li>
+                                        {% endif %}
+                                        {% for i in spots.paginator.page_range %}
+                                            {% if spots.number == i %}
+                                                <li class="active">
+                                                    <span>
+                                                        {{ i }} <span class="sr-only">(current)</span>
+                                                    </span>
+                                                </li>
+                                            {% else %}
+                                                <li>
+                                                    <a href="?page=
+
+
+                                                            {{ i }}{% if request.GET.yayin_taslak %} &yayin_taslak={{ request.GET.yayin_taslak }} {% endif %} {% if request.GET.search %} &search= {{ request.GET.search }} {% endif %}">
+                                                        {{ i }}
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if spots.has.next %}
+                                            <li>
+                                                <a href="?page=
+
+
+                                                        {{ spots.next_page_number }}{% if request.GET.yayin_taslak %} &yayin_taslak={{ request.GET.yayin_taslak }} {% endif %} {% if request.GET.search %} &search= {{ request.GET.search }} {% endif %}">
+                                                    &raquo;
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="disabled">
+                                                <span>
+                                                    &raquo;
+                                                </span>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger">İçerik Mevcut Değil</div>
+                    {% endif %}
+
+                    <!--{% if sayi < 10 %} -->
+                        <!--    <small>Küçük Selam</small>  -->
+                        <!--{% elif sayi == 10 %} -->
+                        <!--     <p class="a2">{{ sayi }}</p> -->
+                        <!--{% else %} -->
+                        <!--     <p>Çok Çok Selam</p> -->
+                        <!--{% endif %} -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

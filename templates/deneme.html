@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block ust_icerik %}
+    <script type="text/javascript" rel="script">
+        $(document).ready(function () {
+            $("#ogrenci_getir").click(function () {
+                $.ajax({
+                    url:"{% url "deneme-ajax2" %}",
+                    type: "GET",
+                    dataType: "json",
+                    data:{},
+                    success:function (data) {
+                        $("#gelen_mesaj").html(data.html)
+                    }
+                })
+            })
+
+            $("button[name='b1']").click(function () {
+                var x = $(this)
+                var url = x.attr("url")
+                $.ajax({
+                    url: url,
+                    method: "POST",
+                    dataType: "json",
+                    data: {"csrfmiddlewaretoken": "{{ csrf_token }}"},
+                    success: function (data) {
+                        x.html(data.msg);
+                    }
+                })
+            })
+            $("button[name='b2']").click(function () {
+                var x = $(this)
+                x.html("<b>Hello</b><br>")
+                x.prepend("Can<br>")
+                x.prepend("Zehra<br>")
+                x.append("World")
+            })
+            $(".b3").click(function () {
+                var x = $(this)
+                x.html("<b>Aşk</b><br>")
+                x.prepend("Can<br>")
+                x.prepend("Zehra<br>")
+                x.append("Bal")
+            })
+
+            $("#b4").click(function () {
+                var x = $(this);
+                var adres = $(this).attr("url");
+                $.ajax({
+                    url: adres,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        x.html(data.msg);
+                    }
+
+                })
+            })
+
+            $("#b5").submit(function (e) {
+                e.preventDefault();
+                var x = $(this);
+                var type = x.attr("method");
+                var action = x.attr("action");
+                var data = x.serialize()
+
+                $.ajax({
+                    url: action,
+                    type: type,
+                    data: data,
+                    success: function (data) {
+                        /* alert(data.msg +" - "+ data.isim) */
+                        x.append(data.msg + "<br>")
+
+                    }
+                })
+
+                console.log(data)
+                console.log(action)
+                console.log(type)
+
+            })
+
+
+            $("a").click(function (e) {
+                e.preventDefault();  /* url e gitmeyi engelledi */
+                var x = $(this);
+                var href = x.attr("href")
+                console.log(href)
+                var username = x.attr("username"/*  ,"Can"  */);
+                //username = x.attr("username")
+                console.log(username)
+            })
+        })
+    </script>
+{% endblock %}
+
+{% block icerik %}
+    <div class="row">
+        <div class="text-center" style="margin-right: auto;margin-left: auto">
+            <button name="b1" url="{% url "deneme-ajax" %}" class="btn btn-warning">
+                Merhaba
+            </button>
+            <button name="b2" class="btn btn-danger">
+                Dünya
+            </button>
+            <button class="b3 btn btn-danger">
+                Zehra
+            </button>
+            <button id="b4" url="{% url 'deneme' %}" class="btn btn-danger">
+                Zehram
+            </button>
+            <a href="{% url 'spots' %}" username="Burak" class="btn btn-info">
+                CAN
+            </a>
+            <form id="b5" action="{% url "deneme-ajax" %}" method="post" style="margin-top: 10px">
+                {% csrf_token %}
+                <input type="hidden" name="isim" value="Burak Can MD.PhD">
+                <button class="btn btn-danger" type="submit">
+                    Ajax İsteği
+                </button>
+                <br>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 pull-center">
+            <h2>Render-to-String Kullanımı</h2>
+            <button class="btn btn-success" id="ogrenci_getir">
+                Öğrenci Getir
+            </button>
+            <div id="gelen_mesaj">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

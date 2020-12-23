@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}
+Değer Üretimi
+{% endblock %}
+
+{% block icerik %}
+<style>
+</style>
+<div class="row">
+    <div class="col-lg-8 text-center" style="margin-top:30px;margin-right:auto;margin-left: auto">
+        <div class="card-header col-lg-10" style="margin-right:auto;margin-left: auto"><h3>Değer Üret</h3>
+        <form action="{% url "create" %}" enctype="multipart/form-data" method="post" ><br>
+    {% csrf_token %}
+        {% include "tblog/includes/form-include.html" %}
+        <div class="form-group">
+            <div>
+                <input type="submit" value="Kaydet" class="btn btn-success btn-sm">
+            </div>
+        </div>
+
+    </form>
+        </div>
+        <div>
+
+        <br>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

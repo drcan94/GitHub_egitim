@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}
+    Spot Detayı
+{% endblock %}
+
+{% block icerik %}
+    <div class="row" style="margin-top: 30px">
+        <div class="col-lg-8 text-center" style="margin-right:auto;margin-left: auto">
+
+            <div style="margin-top:20px">
+                <!-- <a href="{% url "spots" %}"><span class="btn btn-success btn-sm">GERİ</span></a><br><hr> -->
+                {% if article %}
+                    <div class="card-header row">
+                        <h2 class="col-lg-12">{{ article.title|upper }}</h2>
+                        <span class="col-lg-12" style="margin-right: auto">{{ article.get_yayin_taslak_html }}</span>
+                        <span class="col-lg-12" style="margin-top: 10px;margin-right: auto">
+                        {% if request.user.username in article.get_added_favorite_user %}
+                            <a href="{% url 'favorite-page' article.slug %}?next={% url 'detail' article.slug %}"
+                               class="btn btn-sm btn-danger active">
+                                            Favoriden Çıkar
+                            </a>
+                        {% else %}
+                            <a href="{% url 'favorite-page' article.slug %}?next={% url 'detail' article.slug %}"
+                               class="btn btn-sm btn-info active ">
+                                            Favoriye Ekle
+                            </a>
+                        {% endif %}
+                    </span>
+                    </div>
+
+                    <br>
+                    {% if article.get_image %}
+                        <img class="img-responsive"
+                             width="{% if not article.get_image == "/media/default/61733.png" %} 90% {% endif %}"
+                             style="margin-bottom: 20px" src="{{ article.get_image }}">
+                    {% endif %}
+                    <div class="card-header"><b><p style="color: #8b0000">YAZAR</p>
+                        <hr>
+                        {{ article.user.userprofile.user_full_name }}<br><a
+                                href="{% url "user-profile" article.user.username %}">({{ article.user }})</a></b></div>
+                    <div class="text-left">{{ article.content|safe }}</div>
+
+                    <p class="alert alert-primary col-lg-8" style="margin-right:auto;margin-left: auto">
+                        Kategori : {{ article.kategoriler.all|join:", " }}
+                    </p>
+                    {% if request.user == article.user %}
+                        <a class="btn btn-success" href="{% url 'update' article.slug %}">Güncelle</a>
+                        <a class="btn btn-danger" href="{% url 'delete' article.slug %}">Sil</a><br><br>
+                    {% endif %}
+                    <div class="card-header col-lg-12" style="margin-right:auto;margin-left: auto">
+                        <div style="margin-top: 20px">
+                            <img width="{% if request.user.userprofile.get_profile_photo %} 60px {% endif %}"
+                                 src="{% if user.userprofile.get_profile_photo != "/media/False" %} {{ user.userprofile.get_profile_photo }} {% else %} {{"/static/img/default.jpg" }} {% endif %}">
+
+                        </div>
+                        <form style="margin-right: auto;margin-left:auto;margin-top: 10px" class="col-lg-9" action="{% url "add-comment" article.slug %}"
+                              enctype="multipart/form-data" method="post">
+                            {% csrf_token %}
+                            {% include "tblog/includes/form-include.html" %}
+                            <div class="form-group">
+                                <div>
+                                    <input type="submit" value="Ekle" class="btn btn-success btn-sm">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+<br>
+                    <div class="card-header col-lg-12" style="margin-right:auto;margin-left: auto"><h3 style="margin-top: 15px">Yorumlar
+                        ({{ article.get_article_comment|length }})</h3><br>
+                        <div class="col-lg-12">
+                            {% for comment in comments %}
+                                <div class="row" style="margin-left: auto;margin-right: auto">
+                                    <div style="margin-left: 5px">
+                                        <img width="{% if comment.user.userprofile.get_profile_photo %} 28px {% endif %}"
+                                             src="{% if comment.user.userprofile.get_profile_photo != "/media/False" %} {{ comment.user.userprofile.get_profile_photo }} {% else %} {{"/static/img/default.jpg" }} {% endif %}">
+                                    </div>
+                                    <div style="margin-left: 15px">
+                                        <div>
+                                            <div class="text-left"><h5
+                                                    style="display:inline-block">{{ comment.user.userprofile.get_screen_name }}</h5>
+                                                <small class="text-left">, {{ comment.comment_date|timesince }}
+                                                    önce</small>
+                                            </div>
+                                            <div style="text-align: left">{{ comment.comment_content|safe|linebreaksbr }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">Böyle Bir Makale Bulunmamaktadır</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
